@@ -45,6 +45,8 @@ import org.opensearch.client.util.ObjectBuilder;
 import jakarta.json.JsonValue;
 import jakarta.json.stream.JsonGenerator;
 import java.lang.String;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 
 // typedef: _types.query_dsl.TermsQuery
@@ -52,17 +54,17 @@ import java.util.function.Function;
 public class TermsQuery extends QueryBase implements QueryVariant {
 	private final String field;
 
-	private final JsonValue /*
+	private final List<JsonValue> /*
 							 * Union(Array<_types.long> | Array<internal.string> |
 							 * _types.query_dsl.TermsLookup)
-							 */ value;
+							 */ values;
 
 	// ---------------------------------------------------------------------------------------------
 
 	private TermsQuery(Builder builder) {
 		super(builder);
 		this.field = ModelTypeHelper.requireNonNull(builder.field, this, "field");
-		this.value = ModelTypeHelper.requireNonNull(builder.value, this, "value");
+		this.values = ModelTypeHelper.unmodifiableRequired(builder.values, this, "values");
 
 	}
 
@@ -88,16 +90,21 @@ public class TermsQuery extends QueryBase implements QueryVariant {
 	/**
 	 * Required -
 	 */
-	public final JsonValue /*
+	public final List<JsonValue> /*
 							 * Union(Array<_types.long> | Array<internal.string> |
 							 * _types.query_dsl.TermsLookup)
-							 */ value() {
-		return this.value;
+							 */ values() {
+		return this.values;
 	}
 
 	protected void serializeInternal(JsonGenerator generator, JsonpMapper mapper) {
 		generator.writeKey(this.field);
-		generator.write(this.value);
+		generator.writeStartArray();
+		for (JsonValue item0 : this.values) {
+			generator.write(item0);
+
+		}
+		generator.writeEnd();
 
 		super.serializeInternal(generator, mapper);
 
@@ -111,10 +118,10 @@ public class TermsQuery extends QueryBase implements QueryVariant {
 	public static class Builder extends QueryBase.AbstractBuilder<Builder> implements ObjectBuilder<TermsQuery> {
 		private String field;
 
-		private JsonValue /*
+		private List<JsonValue> /*
 							 * Union(Array<_types.long> | Array<internal.string> |
 							 * _types.query_dsl.TermsLookup)
-							 */ value;
+							 */ values;
 
 		/**
 		 * Required -
@@ -127,11 +134,22 @@ public class TermsQuery extends QueryBase implements QueryVariant {
 		/**
 		 * Required -
 		 */
-		public final Builder value(JsonValue /*
+		public final Builder values(JsonValue... /*
 												 * Union(Array<_types.long> | Array<internal.string> |
 												 * _types.query_dsl.TermsLookup)
-												 */ value) {
-			this.value = value;
+												 */ values) {
+			this.values = Arrays.asList(values);
+			return this;
+		}
+
+		/**
+		 * Required -
+		 */
+		public final Builder values(List<JsonValue> /*
+		 * Union(Array<_types.long> | Array<internal.string> |
+		 * _types.query_dsl.TermsLookup)
+		 */ values) {
+			this.values = values;
 			return this;
 		}
 
@@ -166,7 +184,7 @@ public class TermsQuery extends QueryBase implements QueryVariant {
 
 		op.setUnknownFieldHandler((builder, name, parser, mapper) -> {
 			builder.field(name);
-			builder.value(JsonpDeserializer.jsonValueDeserializer().deserialize(parser, mapper));
+			builder.values(JsonpDeserializer.arrayDeserializer(JsonpDeserializer.jsonValueDeserializer()).deserialize(parser, mapper));
 		});
 
 	}
