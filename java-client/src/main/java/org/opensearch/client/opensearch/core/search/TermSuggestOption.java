@@ -58,7 +58,8 @@ public class TermSuggestOption implements JsonpSerializable {
 	@Nullable
 	private final Long freq;
 
-	private final double score;
+	@Nullable
+	private final Double score;
 
 	// ---------------------------------------------------------------------------------------------
 
@@ -92,7 +93,8 @@ public class TermSuggestOption implements JsonpSerializable {
 	/**
 	 * Required - API name: {@code score}
 	 */
-	public final double score() {
+	@Nullable
+	public final Double score() {
 		return this.score;
 	}
 
@@ -115,8 +117,10 @@ public class TermSuggestOption implements JsonpSerializable {
 			generator.write(this.freq);
 
 		}
-		generator.writeKey("score");
-		generator.write(this.score);
+		if (this.score != null) {
+			generator.writeKey("score");
+			generator.write(this.score);
+		}
 
 	}
 
@@ -132,6 +136,7 @@ public class TermSuggestOption implements JsonpSerializable {
 		@Nullable
 		private Long freq;
 
+		@Nullable
 		private Double score;
 
 		/**
@@ -153,7 +158,7 @@ public class TermSuggestOption implements JsonpSerializable {
 		/**
 		 * Required - API name: {@code score}
 		 */
-		public final Builder score(double value) {
+		public final Builder score(@Nullable Double value) {
 			this.score = value;
 			return this;
 		}
