@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class UnionDeserializer<Union, Kind, Member> implements JsonpDeserializer<Union> {
@@ -189,9 +190,14 @@ public class UnionDeserializer<Union, Kind, Member> implements JsonpDeserializer
 
         @Override
         public JsonpDeserializer<Union> build() {
-            Set<String> allFields = objectMembers.stream().flatMap(m -> m.fields.stream()).collect(Collectors.toSet());
+            Map<String, Long> fieldFrequencies = objectMembers.stream().flatMap(m -> m.fields.stream())
+                    .collect( Collectors.groupingBy(Function.identity(), Collectors.counting()));
+            Set<String> duplicateFields = fieldFrequencies.entrySet().stream()
+                    .filter(entry -> entry.getValue() > 1)
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toSet());
             for (UnionDeserializer.SingleMemberHandler<Union, Kind, Member> member: objectMembers) {
-                member.fields.removeAll(allFields);
+                member.fields.removeAll(duplicateFields);
             }
 
             // Check that no object member had all its fields removed
