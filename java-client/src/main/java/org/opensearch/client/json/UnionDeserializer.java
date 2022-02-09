@@ -172,7 +172,7 @@ public class UnionDeserializer<Union, Kind, Member> implements JsonpDeserializer
             if (unwrapped instanceof ObjectDeserializer) {
                 ObjectDeserializer<?> od = (ObjectDeserializer<?>) unwrapped;
 
-                UnionDeserializer.SingleMemberHandler<Union, Kind, Member> member = new SingleMemberHandler<>(tag, deserializer, od.fieldNames());
+                UnionDeserializer.SingleMemberHandler<Union, Kind, Member> member = new SingleMemberHandler<>(tag, deserializer, new HashSet<>(od.fieldNames()));
                 objectMembers.add(member);
                 if (od.shortcutProperty() != null) {
                     // also add it as a string
